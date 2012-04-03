@@ -14,7 +14,15 @@ auto_connect='n'
 
 # verification URL, if left empty Prey will always activate and run,
 # which is certainly *not* recommended.
-check_url='http://control.preyproject.com'
+#check_url='http://control.preyproject.com'
+#check_url='https://control.example.com'
+## separate url for getting options/status and the one to report
+## could have multiple server to check if one unavailable
+## => if one url_status and missing, report to all url_report
+## => if multiple url_status, check each one and report depending on same server
+#check_url_status='https://control.example.com'
+check_url_status='https://control.example.com http://control.preyproject.com'
+check_url_report='https://control.example.com'
 
 # IMPORTANT: on what HTTP response code will Prey be activated (200 or 404)
 # control panel users don't touch this! standalone users may want to
@@ -59,7 +67,8 @@ mail_subject='[Prey] Status Report'
 # if you're having trouble getting requests across your firewall or proxy,
 # you can try adding '-0' to make curl perform HTTP 1.0 requests
 # to connect through a proxy use: -x/--proxy <host[:port]>
-curl_options='--compress --connect-timeout 60'
+# -k to connect to auto-signed https server
+curl_options='--compress --connect-timeout 60 -k'
 
 # this option prepends a random number as a subdomain to the check URL on http mode
 # makes it harder for other programs to block Prey so its a good idea to be on
@@ -94,10 +103,12 @@ sftp_path='.'
 # you can log in either by RSA key or entering the pass below
 ####################################################################
 
-remote_tunnel_port=''
-remote_tunnel_host='my.server.com'
-remote_tunnel_user='username'
-remote_tunnel_pass='password'
+## where for rsa id file ?
+
+remote_tunnel_port='6722'
+remote_tunnel_host='control.example.com'
+remote_tunnel_user='_lost'
+remote_tunnel_pass=''
 
 ####################################################################
 # Amazon S3 keys
@@ -110,3 +121,7 @@ s3_bucket_name=''
 ####################################################################
 # if you have any questions please visit preyproject.com
 ####################################################################
+
+## 20111009 Juju
+date=`date "+%Y-%m-%d_%H:%M:%S"` 
+

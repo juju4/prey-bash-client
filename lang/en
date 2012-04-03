@@ -9,7 +9,7 @@
 STRING_START="PREY $version spreads its wings!"
 STRING_TRY_TO_CONNECT=" -- Trying to connect to first open wifi network available..."
 STRING_NO_CONNECT_TO_WIFI=" -- Couldn't find a way to connect to an open wifi network!"
-STRING_CHECK_URL=" -- Checking URL..."
+STRING_CHECK_URL=" --- Checking URL..."
 STRING_NO_PROBLEM=" -- Nothing to worry about. :)\n"
 STRING_PROBLEM=" -- HOLY GUACAMOLE!!"
 STRING_WRITE_EMAIL=" -- Writing our email..."

@@ -58,6 +58,11 @@ if [ $connected == 0 ]; then
 		fi
 
 	fi
+   done
+
+## 201110xx Juju
+#	log " -- Running user-defined actions"
+#	/usr/share/prey/user/probe-lost.sh
 fi
 
 ####################################################################
@@ -119,11 +124,11 @@ fi
 # create tmpdir for downloading stuff, storing files, etc
 create_tmpdir
 
-if [[ $connected == 1 && -n "$check_url" ]]; then
+if [[ $connected == 1 && -n "$check_url_status" && `echo $check_url_status | wc -w` == 1 ]]; then
 
-	log "$STRING_CHECK_URL"
+	log "$STRING_CHECK_URL (unique status server)"
 
-	log "\n${bold} == Verifying status...${bold_end}\n"
+	log "\n${bold} == Verifying status on $check_url_status ...${bold_end}\n"
 	check_device_status
 
 	if [ -z "$response_status" ]; then
@@ -154,8 +159,67 @@ if [[ $connected == 1 && -n "$check_url" ]]; then
 			####################################################################
 
 			log "\n${bold} == Sending report!${bold_end}\n"
-			send_report
+			list_url_report=$check_url_report
+			for check_url_report in $list_url_report; do
+				log "\n${bold} >> Sending report to $check_url_report!${bold_end}\n"
+				send_report
+				log "\n$STRING_DONE"
+			done
 
+		else
+
+			log "$STRING_NO_PROBLEM"
+
+		fi
+
+	fi
+
+elif [[ $connected == 1 && -n "$check_url_status" && `echo $check_url_status | wc -w` -gt 1 ]]; then
+
+	list_url_status=$check_url_status
+	for check_url_status in $list_url_status; do
+
+	log "$STRING_CHECK_URL (multiple servers: doing $check_url_status)"
+	check_url_report=$check_url_status
+ 
+	check_device_status
+ 
+	process_config
+	process_module_config
+ 
+	log "\n${bold} >> Verifying status on $check_url ...${bold_end}\n"
+	check_device_status
+
+	if [ -z "$response_status" ]; then
+
+		log_response_error
+
+	else
+
+		log " -- Got status code $response_status!"
+		[ "$response_status" == "$missing_status_code" ] && device_missing=1
+		process_config
+		process_module_config
+
+		if [ -n "$device_missing" ]; then
+
+			log "$STRING_PROBLEM"
+
+			####################################################################
+			# initialize and fire off active modules
+			####################################################################
+
+			set +e # error mode off, just continue if a module fails
+			log " -- Running active report modules..."
+			run_active_modules
+
+			####################################################################
+			# lets send whatever we've gathered
+			####################################################################
+
+			log "\n${bold} == Sending report!${bold_end}\n"
+			log "\n${bold} >> Sending report to $check_url_report!${bold_end}\n"
+			send_report
 			log "\n$STRING_DONE"
 
 		else
@@ -165,6 +229,8 @@ if [[ $connected == 1 && -n "$check_url" ]]; then
 		fi
 
 	fi
+
+	done
 
 fi
 

@@ -31,7 +31,7 @@ check_net_status(){
 }
 
 randomize_subdomain(){
-	check_url=$(echo $check_url | sed "s/\/\//\/\/$RANDOM./")
+	check_url=`echo $check_url_status | sed "s/\/\//\/\/$RANDOM./"`
 }
 
 # we could eventually use a different method for status checking
@@ -40,7 +40,7 @@ check_device_status(){
 		request_headers="-H X-Encrypt-Response:${cipher_algorithm}"
 
 		if [ -n "$device_key" ]; then
-			local check_url="$check_url/devices/$device_key.xml"
+			local check_url="$check_url_status/devices/$device_key.xml"
 		else
 			error_exit "You need to enter your Device Key for querying the Control Panel!"
 		fi

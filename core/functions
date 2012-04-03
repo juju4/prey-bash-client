@@ -317,7 +317,7 @@ self_setup(){
 	[ "$os" == "linux" ] && local os_name=$distro_name || local os_name=$os
 	local params="device[title]=$pc_name&device[device_type]=$pc_type&device[os_version]=$pc_os_version&device[os]=$(capitalize $os_name)"
 
-	send_request "$check_url/devices.xml" "--connect-timeout 10 -u $api_key:x -d "$params""
+	send_request "$check_url_status/devices.xml" "--connect-timeout 10 -u $api_key:x -d "$params""
 
 	if [ $response_status == "201" ]; then
 
